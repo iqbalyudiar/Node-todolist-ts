@@ -11,6 +11,7 @@ export const getTodos = async (
     const totalItems = await Todo.find().countDocuments();
 
     res.status(200).json({
+      success: true,
       todos,
       totalItems,
     });
@@ -52,6 +53,7 @@ export const addTodo = async (
     const result = await todo.save();
     res.status(201).json({
       message: "Todo created",
+      success: true,
       result,
     });
   } catch (error) {
