@@ -1,6 +1,8 @@
 import todo from "./todo";
+import user from "./user";
 const controller = {
-  todo
+  todo,
+  user,
 };
 
-export default controller
+export default controller;
