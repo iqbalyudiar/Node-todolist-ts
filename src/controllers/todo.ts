@@ -19,6 +19,23 @@ export const getTodos = async (
   }
 };
 
+export const getTodo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { todoId } = req.params;
+    const result = await Todo.findById(todoId);
+    res.status(200).json({
+      success: true,
+      result,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const addTodo = async (
   req: Request,
   res: Response,
@@ -42,4 +59,4 @@ export const addTodo = async (
   }
 };
 
-export default { getTodos, addTodo };
+export default { getTodos, getTodo, addTodo };
