@@ -79,6 +79,35 @@ export const updateTodoStatus = async (
     const result = await todo.save();
     res.status(200).json({
       success: true,
+      message: "Todo status updated.",
+      result,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updateTodo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { title, description, creator, status } = req.body;
+  const { todoId } = req.params;
+
+  try {
+    const todo = await Todo.findById(todoId);
+    if (!todo) {
+      throw Error("Todo not found.");
+    }
+
+    todo.title = title;
+    todo.description = description;
+    todo.creator = creator;
+    todo.status = status;
+    const result = await todo.save();
+    res.status(200).json({
+      success: true,
       message: "Todo updated.",
       result,
     });
@@ -87,4 +116,4 @@ export const updateTodoStatus = async (
   }
 };
 
-export default { getTodos, getTodo, addTodo, updateTodoStatus };
+export default { getTodos, getTodo, addTodo, updateTodo, updateTodoStatus };

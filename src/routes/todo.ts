@@ -3,7 +3,7 @@ import controller from "../controllers";
 
 const router = Router();
 const {
-  todo: { getTodos, getTodo, addTodo, updateTodoStatus },
+  todo: { getTodos, getTodo, addTodo, updateTodo, updateTodoStatus },
 } = controller;
 
 // Get all todos
@@ -15,7 +15,10 @@ router.get("/todo/:todoId", getTodo);
 // Create a todo
 router.post("/todo", addTodo);
 
+// Update todo
+router.put("/todo/:todoId", updateTodo);
+
 // Update todo status
-router.patch("/todo/:todoId/status", updateTodoStatus)
+router.patch("/todo/:todoId/status", updateTodoStatus);
 
 export default router;
