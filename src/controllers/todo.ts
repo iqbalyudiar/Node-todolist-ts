@@ -61,4 +61,30 @@ export const addTodo = async (
   }
 };
 
-export default { getTodos, getTodo, addTodo };
+export const updateTodoStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { status } = req.body;
+  const { todoId } = req.params;
+
+  try {
+    const todo = await Todo.findById(todoId);
+    if (!todo) {
+      throw Error("Todo not found.");
+    }
+
+    todo.status = status;
+    const result = await todo.save();
+    res.status(200).json({
+      success: true,
+      message: "Todo updated.",
+      result,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export default { getTodos, getTodo, addTodo, updateTodoStatus };
