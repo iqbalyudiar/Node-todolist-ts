@@ -1,15 +1,22 @@
 import { Request, Response, NextFunction } from "express";
 import { Todo } from "../models";
 
-export const getTodos = (req: Request, res: Response, next: NextFunction) => {
-  res.status(200).json([
-    {
-      id: 1,
-      title: "Sweeping",
-      description: "Sweeping a floor",
-      status: "todo",
-    },
-  ]);
+export const getTodos = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const todos = await Todo.find();
+    const totalItems = await Todo.find().countDocuments();
+
+    res.status(200).json({
+      todos,
+      totalItems,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const addTodo = async (
