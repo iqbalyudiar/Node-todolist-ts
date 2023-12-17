@@ -29,4 +29,42 @@ export const signup = async (
   }
 };
 
-export default { signup };
+export const signin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { username, password } = req.body;
+  let foundUser;
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      const error = new Error("User not found");
+      throw error;
+    }
+
+    foundUser = user;
+    const isEqual = await bcrypt.compare(password, user.password);
+    if (!isEqual) {
+      const error = new Error("Wrong password!");
+      throw error;
+    }
+
+    const token = jwt.sign(
+      {
+        username: foundUser.username,
+        userId: foundUser._id.toString(),
+      },
+      "secret"
+    );
+    res.status(201).json({
+      success: true,
+      token,
+      userID: foundUser._id,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export default { signup, signin };
