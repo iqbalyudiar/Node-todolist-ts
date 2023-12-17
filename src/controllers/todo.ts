@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { Types } from "mongoose";
 import { Todo, User } from "../models";
 
 export const getTodos = async (
@@ -124,4 +123,34 @@ export const updateTodo = async (
   }
 };
 
-export default { getTodos, getTodo, addTodo, updateTodo, updateTodoStatus };
+export const deleteTodo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { todoId } = req.params;
+    const { creator } = req.body;
+    const result = await Todo.findById(todoId);
+    await Todo.findByIdAndDelete(todoId);
+
+    const user = await User.findById(creator);
+    user?.todos?.pull(todoId);
+    await user?.save();
+    res.status(200).json({
+      success: true,
+      message: "Todo has been deleted.",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export default {
+  getTodos,
+  getTodo,
+  addTodo,
+  updateTodo,
+  updateTodoStatus,
+  deleteTodo,
+};
