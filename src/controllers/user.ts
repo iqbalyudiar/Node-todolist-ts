@@ -30,7 +30,10 @@ export const getUsers = async (
   next: NextFunction
 ) => {
   try {
-    const users = await User.find();
+    const users = await User.find().populate(
+      "todos",
+      "title description status"
+    );
     const totalItems = await User.find().countDocuments();
 
     res.status(200).json({
@@ -50,7 +53,10 @@ export const getUser = async (
 ) => {
   try {
     const { userId } = req.params;
-    const result = await User.findById(userId);
+    const result = await User.findById(userId).populate(
+      "todos",
+      "title description status"
+    );
     res.status(200).json({
       success: true,
       result,
