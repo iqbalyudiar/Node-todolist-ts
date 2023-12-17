@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { Todo } from "../models";
+import { Types } from "mongoose";
+import { Todo, User } from "../models";
 
 export const getTodos = async (
   req: Request,
@@ -7,7 +8,7 @@ export const getTodos = async (
   next: NextFunction
 ) => {
   try {
-    const todos = await Todo.find();
+    const todos = await Todo.find().populate("creator", "username name");
     const totalItems = await Todo.find().countDocuments();
 
     res.status(200).json({
@@ -27,7 +28,10 @@ export const getTodo = async (
 ) => {
   try {
     const { todoId } = req.params;
-    const result = await Todo.findById(todoId);
+    const result = await Todo.findById(todoId).populate({
+      path: "creator",
+      select: "username name",
+    });
     res.status(200).json({
       success: true,
       result,
@@ -42,15 +46,19 @@ export const addTodo = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { title, description } = req.body;
+  const { title, description, creator } = req.body;
   const todo = new Todo({
     title,
     description,
-    creator: "Iqbal",
+    creator,
     status: "todo",
   });
   try {
     const result = await todo.save();
+    const user = await User.findById(creator);
+
+    user?.todos?.push(todo);
+    await user?.save();
     res.status(201).json({
       message: "Todo created",
       success: true,
