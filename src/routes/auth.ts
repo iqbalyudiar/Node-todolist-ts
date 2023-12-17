@@ -4,13 +4,10 @@ import controller from "../controllers";
 const router = Router();
 
 const {
-  user: { getUser, getUsers },
+  auth: { signup },
 } = controller;
 
-// Get all users
-router.get("/users", getUsers);
-
-// Get single user
-router.get("/user/:userId", getUser);
+// signup
+router.post("/signup", signup);
 
 export default router;
