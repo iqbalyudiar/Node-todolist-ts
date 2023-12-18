@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Todo, User } from "../models";
+import { IAuthRequest } from "../interfaces";
 
 export const getTodos = async (
   req: Request,
@@ -40,22 +41,22 @@ export const getTodo = async (
   }
 };
 
-export const addTodo = async (
-  req: Request,
+export const addTodo: any = async (
+  req: IAuthRequest,
   res: Response,
   next: NextFunction
 ) => {
   const { title, description, creator } = req.body;
+  const { userId } = req;
   const todo = new Todo({
     title,
     description,
-    creator,
+    creator: userId,
     status: "todo",
   });
   try {
     const result = await todo.save();
-    const user = await User.findById(creator);
-
+    const user = await User.findById(userId);
     user?.todos?.push(todo);
     await user?.save();
     res.status(201).json({
@@ -123,18 +124,18 @@ export const updateTodo = async (
   }
 };
 
-export const deleteTodo = async (
-  req: Request,
+export const deleteTodo: any = async (
+  req: IAuthRequest,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const { todoId } = req.params;
-    const { creator } = req.body;
+    const { userId } = req;
     const result = await Todo.findById(todoId);
     await Todo.findByIdAndDelete(todoId);
 
-    const user = await User.findById(creator);
+    const user = await User.findById(userId);
     user?.todos?.pull(todoId);
     await user?.save();
     res.status(200).json({

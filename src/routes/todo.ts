@@ -1,5 +1,6 @@
 import { Router } from "express";
 import controller from "../controllers";
+import isAuth from "../middleware/is-auth";
 
 const router = Router();
 const {
@@ -14,13 +15,13 @@ const {
 } = controller;
 
 // Get all todos
-router.get("/todos", getTodos);
+router.get("/todos", isAuth, getTodos);
 
 // Get single todo
 router.get("/todo/:todoId", getTodo);
 
 // Create a todo
-router.post("/todo", addTodo);
+router.post("/todo", isAuth, addTodo);
 
 // Update todo
 router.put("/todo/:todoId", updateTodo);
