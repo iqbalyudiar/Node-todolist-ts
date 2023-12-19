@@ -24,12 +24,12 @@ router.get("/todo/:todoId", getTodo);
 router.post("/todo", isAuth, addTodo);
 
 // Update todo
-router.put("/todo/:todoId", updateTodo);
+router.put("/todo/:todoId", isAuth, updateTodo);
 
 // Update todo status
-router.patch("/todo/:todoId/status", updateTodoStatus);
+router.patch("/todo/:todoId/status", isAuth, updateTodoStatus);
 
 // Delete todo
-router.delete("/todo/:todoId", deleteTodo);
+router.delete("/todo/:todoId", isAuth, deleteTodo);
 
 export default router;
