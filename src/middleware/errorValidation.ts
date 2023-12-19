@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
+import { IError } from "../interfaces";
 
 const errorValidation = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error("Validation failed.");
-    const message = error.message;
-    const data = errors.array();
-    return res.status(422).json({ message, data });
+    const error = new Error("Validation failed.") as IError;
+    error.data = errors.array();
+    error.statusCode = 422;
+    throw error;
   }
 
   next();
