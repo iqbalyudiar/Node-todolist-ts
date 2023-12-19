@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Todo, User } from "../models";
-import { IAuthRequest } from "../interfaces";
+import { IAuthRequest, IError } from "../interfaces";
 
 export const getTodos = async (
   req: Request,
@@ -133,6 +133,17 @@ export const deleteTodo: any = async (
     const { todoId } = req.params;
     const { userId } = req;
     const result = await Todo.findById(todoId);
+    if (!result) {
+      const error = new Error("Todo not found.") as IError;
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (result?.creator.toString() !== userId.toString()) {
+      const error = new Error("Not Authorized.") as IError;
+      error.statusCode = 403;
+      throw error;
+    }
     await Todo.findByIdAndDelete(todoId);
 
     const user = await User.findById(userId);
@@ -144,6 +155,7 @@ export const deleteTodo: any = async (
     });
   } catch (error) {
     console.log(error);
+    next(error);
   }
 };
 
