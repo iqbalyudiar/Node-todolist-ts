@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "../models";
+import { IError } from "../interfaces";
 
 export const signup = async (
   req: Request,
@@ -39,14 +40,16 @@ export const signin = async (
   try {
     const user = await User.findOne({ username });
     if (!user) {
-      const error = new Error("User not found");
+      const error = new Error("Username or Password is Invalid") as IError;
+      error.statusCode = 401;
       throw error;
     }
 
     foundUser = user;
     const isEqual = await bcrypt.compare(password, user.password);
     if (!isEqual) {
-      const error = new Error("Wrong password!");
+      const error = new Error("Username or Password is Invalid") as IError;
+      error.statusCode = 401;
       throw error;
     }
 
@@ -63,7 +66,7 @@ export const signin = async (
       userID: foundUser._id,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 

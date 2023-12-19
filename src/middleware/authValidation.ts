@@ -12,3 +12,8 @@ export const signupRules = [
   body("password").trim().isLength({ min: 5 }),
   body("name").trim().not().isEmpty(),
 ];
+
+export const signinRules = [
+  body("username").notEmpty().withMessage("Username cant be empty"),
+  body("password").notEmpty().withMessage("Username cant be empty"),
+];

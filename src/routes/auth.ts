@@ -7,12 +7,12 @@ const {
   auth: { signup, signin },
 } = controller;
 
-const { signupRules } = authValidation;
+const { signupRules, signinRules } = authValidation;
 
 // signup
 router.post("/signup", signupRules, errorValidation, signup);
 
 // signin
-router.post("/signin", signin);
+router.post("/signin", signinRules, errorValidation, signin);
 
 export default router;
