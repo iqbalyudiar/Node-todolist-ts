@@ -1,11 +1,12 @@
 import { Response, NextFunction } from "express";
-import { IAuthRequest, IDecodeJWT } from "../interfaces";
+import { IAuthRequest, IDecodeJWT, IError } from "../interfaces";
 import jwt from "jsonwebtoken";
 
 const isAuth: any = (req: IAuthRequest, res: Response, next: NextFunction) => {
   const authHeader = req.get("Authorization");
   if (!authHeader) {
-    const error = new Error("Not authenticated.");
+    const error = new Error("Not authenticated.") as IError;
+    error.statusCode = 401;
     throw error;
   }
 
@@ -19,7 +20,8 @@ const isAuth: any = (req: IAuthRequest, res: Response, next: NextFunction) => {
   }
 
   if (!decodedToken) {
-    const error = new Error("Not authenticated");
+    const error = new Error("Not authenticated") as IError;
+    error.statusCode = 401;
     throw error;
   }
   req.userId = decodedToken.userId;
